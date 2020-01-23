@@ -18,4 +18,16 @@ $validation = new Validator($database, $errorHandler);
 $tokenHandler = new TokenHandler($database);
 $userHelper = new UserHelper($database);
 $mail = MailConfigHelper::getMailer();
+
+if(isset($_COOKIE['token']) && $tokenHandler->isValid($_COOKIE['token'], 1)) {
+
+    $token = $_COOKIE['token'];
+
+    // i want the user or user id
+    $user = $tokenHandler->getUserFromValidToken($token);
+
+    $auth->setAuthSession($user->user_id);
+}
+
+
 ?>

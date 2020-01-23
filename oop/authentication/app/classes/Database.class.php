@@ -2,10 +2,10 @@
 
 class Database {
 
-    protected $host = "192.168.43.209";
+    protected $host = "localhost";
     protected $db = "authentication";
-    protected $username = "ad";
-    protected $password = "devansh";
+    protected $username = "root";
+    protected $password = "";
     
     protected $table;
     protected $stmt;
@@ -82,8 +82,9 @@ class Database {
     }
 
 
-    
-
+    public function rawQueryExecutor($sql) {
+        return $this->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 
 

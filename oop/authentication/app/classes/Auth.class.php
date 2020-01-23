@@ -5,10 +5,11 @@ class Auth {
     protected $database;
     protected $table = 'users';
     protected $authSession = 'user';
-
+    protected $tokenHandler;
     public function __construct(Database $database) 
     {
         $this->database = $database;
+        $this->tokenHandler = new TokenHandler($database);
     }
 
     public function build() {
@@ -50,7 +51,33 @@ class Auth {
     }
 
     public function signout() {
+
+        $user_id = $_SESSION[$this->authSession];
+        $sql = "DELETE FROM tokens WHERE user_id = {$user_id} and is_remember=1";
+        $this->database->query($sql);
+        setcookie('token', '', time()-5000);
         unset($_SESSION[$this->authSession]);
+    }
+
+
+    public function resetUserPassword(string $token, string $password) {
+
+        if($this->tokenHandler->isValid($token, 0)) {
+            $password = Hash::make($password);
+            $password_update_flag = $this->database->query("UPDATE users, tokens SET users.password = '{$password}' WHERE users.id = tokens.user_id and tokens.token='{$token}'");
+            $token_delete_flag = $this->tokenHandler->deleteToken($token);
+            return ($password_update_flag && $token_delete_flag);
+        }
+        return false;
+        
+    }
+    // returns false if user not loggedin else user object
+    public function user() {
+        if(!$this->check()) {
+            return false;
+        }
+        $user = $this->database->table($this->table)->where('id', '=', $_SESSION[$this->authSession])->first();
+        return $user;
     }
 
 }

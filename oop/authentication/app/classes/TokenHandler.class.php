@@ -25,13 +25,13 @@ class TokenHandler {
     }
 
     public function getValidExixtingToken(int $user_id, int $isRemember) {
-        $query = "SELECT *FROM {$this->table} WHERE USER_ID = {$user_id} and expires_at >= Now() and is_remember = {$isRemember}";
+        $query = "SELECT * FROM {$this->table} WHERE USER_ID = {$user_id} and expires_at >= Now() and is_remember = {$isRemember}";
         $retVal = $this->database->rawQueryExecutor($query);
 
         return $retVal[0]['token'] ?? null;
     }
 
-    public function createRemberToken(int $user_id) {
+    public function createRememberMeToken(int $user_id) {
         return $this->createToken($user_id, 1);
     }
 
@@ -39,7 +39,7 @@ class TokenHandler {
         return $this->createToken($user_id, 0);
     }
 
-    public function createToken(int $user_id, int $isRemember) {
+    private function createToken(int $user_id, int $isRemember) {
         $validToken = $this->getValidExixtingToken($user_id, $isRemember);
         if($validToken) {
             return $validToken;
@@ -55,12 +55,21 @@ class TokenHandler {
             'is_remember' => $isRemember
         ];
 
-        return $this->database->table($this->table)->insert($data) ? $data : null;
+        return $this->database->table($this->table)->insert($data) ? $data['token'] : null;
     }
 
     public function isValid(string $token, int $isRemember) {
 
         return !empty($this->database->rawQueryExecutor("SELECT * FROM {$this->table} WHERE token = '$token' and expires_at >= Now() and is_remember = $isRemember"));
+    }
+
+    public function getUserFromValidToken(string $token) {
+        return $this->database->table($this->table)->where('token', '=', $token)->first();
+    }
+
+    public function deleteToken(string $token) {
+        $sql = "DELETE FROM {$this->table} WHERE TOKEN = '{$token}'";
+        return $this->database->query($sql);
     }
 
 }

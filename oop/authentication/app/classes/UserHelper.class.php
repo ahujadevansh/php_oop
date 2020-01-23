@@ -11,11 +11,11 @@ class UserHelper {
     }
 
     public function getUserByEmail(string $email) {
-        $this->database->table($this->table)->where('email', '=', $email)->first();
+        return $this->database->table($this->table)->where('email', '=', $email)->first();
     }
 
     public function getUserByUsername(string $username) {
-        $this->database->table($this->table)->where('username', '=', $username)->first();
+        return $this->database->table($this->table)->where('username', '=', $username)->first();
     }
 
     public function resetUserPassword(string $token, string $password) {

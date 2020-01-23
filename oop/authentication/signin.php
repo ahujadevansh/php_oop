@@ -30,11 +30,15 @@ if(!empty($_POST)) {
 
         if($signin) {
             if($rememberMe) {
-                
+                $token = $tokenHandler->createRememberMeToken($userHelper->getUserByUSername($username)->id);
+                setcookie('token', $token, time()+1800); //30mins
             }
             header("Location: index.php");
         }
     }
+}
+if(isset($_COOKIE['token']) && $tokenHandler->isValid($_COOKIE['token'], 1)) {
+    header('Location: index.php');
 }
 
 
@@ -69,8 +73,8 @@ if(!empty($_POST)) {
             </div>
 
             <div class="form-group">
+                <input type="checkbox" id="remember_me" name="remember_me" checked>
                 <label for="remember">Remember Me</label>
-                <input type="checkbox" id="remember_me" name="remember_me" class="form-control" checked>
             </div>
 
             <div class="form-group">

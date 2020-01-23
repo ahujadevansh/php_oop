@@ -19,7 +19,7 @@ $result = $auth->build(); // It automatically creates a table for me!
   <body>
 
     <?php if($auth->check()): ?>
-        <p> You are signed in! <a href="signout.php">Sign out</a> </p>
+        <p> You are signed in! <?= $auth->user()->username; ?>!<a href="signout.php">Sign out</a> </p>
     <?php else: ?>
         <p> You are not signed in! <a href="signin.php">Sign In</a> or <a href="signup.php">Sign up</a> </p>
     <?php endif; ?>

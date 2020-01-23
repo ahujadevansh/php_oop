@@ -14,16 +14,19 @@ class MailConfigHelper {
         $mail->isSMTP();
         $mail->Host = 'smtp.mailtrap.io';
         $mail->SMTPAuth = true;
-        $mail->Username = '60dffa07abac4b';
-        $mail->Password = 'f6ae7815270de5';
+        $mail->Username = '671b58206aac73';
+        $mail->Password = '3277ffb7ed7612';
         $mail->Port = 2525;
         $mail->SMTPSecure = 'tls';
         $mail->setFrom('ahuja.devansh2@gmail.com', 'Devansh Ahuja');
-
+            
+        $mail->isHTML(true);
         return $mail;
 
     }
 
 }
+
+//letogal119@winmails.net height6.4
 
 ?>
